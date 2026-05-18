@@ -39,7 +39,7 @@ public class SimpleChatBotService {
             System.out.println("User message: " + userMessage);
             
             // Create a simple HTTP request to Gemini API
-            String geminiApiKey = "AIzaSyCQmX9NpQwlg4rK1HqzesZFs9K0mVqPXic";
+            String geminiApiKey = "";
             if (geminiApiKey == null || geminiApiKey.isEmpty()) {
                 return "Google Gemini API key not configured. Please set GEMINI_API_KEY environment variable.";
             }
