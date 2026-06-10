@@ -1,6 +1,7 @@
 package com.healthcare.dao;
 
 import com.healthcare.model.Patient;
+import com.healthcare.model.PatientSummary;
 import com.healthcare.util.DatabaseUtil;
 import java.sql.*;
 import java.util.ArrayList;
@@ -153,6 +154,52 @@ public class PatientDAO {
         }
     }
     
+    public List<PatientSummary> searchPatientSummaries(String searchTerm) throws SQLException {
+        String sql = "SELECT p.id, u.name, u.email FROM patients p JOIN users u ON p.user_id = u.id "
+                + "WHERE u.is_active = TRUE AND (u.name LIKE ? OR u.email LIKE ?) ORDER BY u.name";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<PatientSummary> results = new ArrayList<>();
+
+        try {
+            conn = DatabaseUtil.getConnection();
+            stmt = conn.prepareStatement(sql);
+            String searchPattern = "%" + searchTerm + "%";
+            stmt.setString(1, searchPattern);
+            stmt.setString(2, searchPattern);
+            rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                results.add(new PatientSummary(rs.getInt("id"), rs.getString("name"), rs.getString("email")));
+            }
+            return results;
+        } finally {
+            DatabaseUtil.close(conn, stmt, rs);
+        }
+    }
+
+    public PatientSummary getPatientSummaryById(int id) throws SQLException {
+        String sql = "SELECT p.id, u.name, u.email FROM patients p JOIN users u ON p.user_id = u.id WHERE p.id = ?";
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DatabaseUtil.getConnection();
+            stmt = conn.prepareStatement(sql);
+            stmt.setInt(1, id);
+            rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return new PatientSummary(rs.getInt("id"), rs.getString("name"), rs.getString("email"));
+            }
+            return null;
+        } finally {
+            DatabaseUtil.close(conn, stmt, rs);
+        }
+    }
+
     private Patient mapResultSetToPatient(ResultSet rs) throws SQLException {
         Patient patient = new Patient();
         patient.setId(rs.getInt("id"));
