@@ -112,6 +112,9 @@ public class LoginServlet extends HttpServlet {
             case "DOCTOR":
                 response.sendRedirect(contextPath + "/doctor/dashboard");
                 break;
+            case "NURSE":
+                response.sendRedirect(contextPath + "/nurse/dashboard");
+                break;
             case "ADMIN":
                 response.sendRedirect(contextPath + "/admin/dashboard");
                 break;

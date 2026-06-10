@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-@WebFilter(urlPatterns = {"/patient/*", "/doctor/*", "/admin/*"})
+@WebFilter(urlPatterns = {"/patient/*", "/doctor/*", "/nurse/*", "/admin/*"})
 public class AuthFilter implements Filter {
     
     @Override
@@ -58,6 +58,11 @@ public class AuthFilter implements Filter {
         }
         
         if (path.startsWith("/doctor/") && !"DOCTOR".equals(user.getRole())) {
+            httpResponse.sendRedirect(contextPath + "/unauthorized.jsp");
+            return;
+        }
+        
+        if (path.startsWith("/nurse/") && !"NURSE".equals(user.getRole())) {
             httpResponse.sendRedirect(contextPath + "/unauthorized.jsp");
             return;
         }
